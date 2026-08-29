@@ -250,4 +250,4 @@ Finalmente, el ciclo de vida del proyecto permite organizar el proceso de datos 
    https://www.nist.gov/publications/nist-big-data-interoperability-framework-volume-1-definitions
 
 6. Microsoft. (2026). *What is big data?* Microsoft Fabric.
-   https://www.microsoft.com/en-us/microsoft-fabric/resources/data-101/what-is-big-data
+   https://www.microsoft.com/en-us/microsoft-fabric/resources/data-101/what-is-big-data.
