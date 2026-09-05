@@ -190,6 +190,4 @@ Amazon Web Services (AWS). (s. f.). *¿Qué son los datos estructurados?* AWS. h
 
 IBM. (s. f.). *What is Predictive Analytics?* IBM Think. https://www.ibm.com/think/topics/predictive-analytics
 
-IBM. (2024). *What is Prescriptive Analytics?* IBM Think. https://www.ibm.com/think/topics/prescriptive-analytics
-
 National Institute of Standards and Technology (NIST). (s. f.). *Data Science*. NIST Computer Security Resource Center Glossary. https://csrc.nist.gov/glossary/term/data_science
