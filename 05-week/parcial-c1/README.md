@@ -1,4 +1,4 @@
-PARCIAL DE CIENCIA DE DATOS
+PARCIAL DE CIENCIA DE DATOS.
 
 ## Caso: Análisis de datos para el mantenimiento de una máquina industrial
 
