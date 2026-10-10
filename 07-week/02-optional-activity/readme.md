@@ -1,7 +1,6 @@
 Markdown
 # Entrega Semana 07 - Consultas SQL y pandas
 **Asignatura:** Ciencia de Datos  
-**Programa:** Ingeniería Industrial  
 **Unidad:** Unidad 2 · Modelamiento, transformación y conexión de datos  
 **Periodo:** 2026-B  
 
