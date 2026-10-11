@@ -1,0 +1,83 @@
+"""
+GUÍA DE ACTIVIDAD PRÁCTICA - SEMANA 09
+Asignatura: Ciencia de Datos
+Tema: Limpieza de un dataset en Pandas
+"""
+
+import pandas as pd
+import numpy as np
+
+# -----------------------------------------------------------------------------
+# 1. CREACIÓN DEL DATASET CON PROBLEMAS DE CALIDAD
+# -----------------------------------------------------------------------------
+datos_sucios = {
+    'id_cliente': [101, 102, 103, 103, 105, 106, 107],
+    'nombre': [' Juan Pérez ', 'MARÍA GÓMEZ', ' Carlos Ruiz ', ' Carlos Ruiz ', 'ana lopez', 'Pedro Picapiedra', ' Sofia Martinez '],
+    'edad': ['25', '30', 'INVALIDO', '35', np.nan, '40', '22'],
+    'fecha_registro': ['2023-01-15', '2023/02/20', '15-03-2023', '15-03-2023', '2023-04-10', np.nan, '2023-06-01'],
+    'ingresos': [2500.0, 3100.5, np.nan, 2800.0, 1900.0, 4200.0, np.nan]
+}
+
+df = pd.DataFrame(datos_sucios)
+
+# Guardar métricas iniciales para el reporte
+filas_antes = len(df)
+nulos_antes = df.isnull().sum().to_dict()
+dup_antes = df.duplicated().sum()
+
+# -----------------------------------------------------------------------------
+# 2. SCRIPT DE LIMPIEZA EN PANDAS
+# -----------------------------------------------------------------------------
+
+# A. Quitar duplicados
+df = df.drop_duplicates()
+
+# B. Normalizar formatos de texto (espacios y mayúsculas/minúsculas)
+df['nombre'] = df['nombre'].astype(str).str.strip().str.title()
+
+# C. Corregir tipos de datos
+df['edad'] = pd.to_numeric(df['edad'], errors='coerce') # Convierte 'INVALIDO' a NaN
+df['fecha_registro'] = pd.to_datetime(df['fecha_registro'], format='mixed', dayfirst=False)
+
+# D. Eliminar o imputar faltantes (nulos)
+df['edad'] = df['edad'].fillna(df['edad'].median()).astype(int)
+df['ingresos'] = df['ingresos'].fillna(df['ingresos'].mean().round(2))
+df['fecha_registro'] = df['fecha_registro'].fillna(df['fecha_registro'].mode()[0])
+
+# Guardar métricas finales
+filas_despues = len(df)
+nulos_despues = df.isnull().sum().to_dict()
+dup_despues = df.duplicated().sum()
+
+# -----------------------------------------------------------------------------
+# 3. REPORTE ANTES / DESPUÉS Y DIMENSIONES DE CALIDAD (IMPRESO EN CONSOLA)
+# -----------------------------------------------------------------------------
+
+print("=" * 60)
+print("              REPORTE ANTES / DESPUÉS DE LA LIMPIEZA")
+print("=" * 60)
+print(f"Número de filas:        Antes = {filas_antes} | Después = {filas_despues}")
+print(f"Filas duplicadas:       Antes = {dup_antes} | Después = {dup_despues}")
+print("\nConteo de valores nulos por columna:")
+for col in df.columns:
+    print(f"  - {col}: Antes = {nulos_antes[col]} | Después = {nulos_despues[col]}")
+
+print("\n" + "=" * 60)
+print("                DIMENSIONES DE CALIDAD MEJORADAS")
+print("=" * 60)
+print("""
+1. Exactitud (Accuracy):
+   Se corrigieron valores no válidos (como texto 'INVALIDO' en la columna 'edad')
+   y fechas en formatos incoherentes, convirtiéndolos al tipo de dato adecuado
+   para asegurar que los datos representen información operable.
+
+2. Consistencia (Consistency):
+   Se eliminaron espacios sobrantes al inicio/final de las cadenas y se homogeneizó
+   el formato de texto en la columna 'nombre' (Title Case), logrando un único estándar
+   visualmente uniforme en todo el conjunto de datos.
+""")
+
+print("=" * 60)
+print("                     DATASET FINAL LIMPIO")
+print("=" * 60)
+print(df)
