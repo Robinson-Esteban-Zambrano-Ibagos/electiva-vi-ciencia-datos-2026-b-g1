@@ -1,0 +1,84 @@
+"""
+# GUÍA DE ACTIVIDAD PRÁCTICA
+# Ciencia de Datos · Semana 10 · Mini-proyecto de datos (cierre C2)
+
+# 1. MODELO DE DATOS (ERD)
++-----------------------+       1:N       +-----------------------+
+|        CLIENTES       |---------------->|        VENTAS         |
++-----------------------+                 +-----------------------+
+| cliente_id (PK)       |                 | venta_id (PK)         |
+| nombre                |                 | cliente_id (FK)       |
+| ciudad                |                 | producto              |
++-----------------------+                 | cantidad              |
+                                          | precio_unitario       |
+                                          | fecha                 |
+                                          +-----------------------+
+"""
+
+import io
+import pandas as pd
+
+# ==========================================
+# 2. CARGA Y LIMPIEZA DE DATOS (PANDAS)
+# ==========================================
+
+# Dataset
+datos_csv = """venta_id,cliente_id,nombre,ciudad,producto,cantidad,precio_unitario,fecha
+1,101,Carlos Perez,Bogota,Laptop,1,1200.0,2026-03-01
+2,102,Ana Gomez,Medellin,Mouse,2,25.0,2026-03-01
+3,103,Luis Martinez,,Teclado,1,45.0,2026-03-02
+4,101,Carlos Perez,Bogota,Monitor,2,180.0,2026-03-02
+5,104,Sofia Torres,Cali,Laptop,1,1200.0,2026-03-03
+5,104,Sofia Torres,Cali,Laptop,1,1200.0,2026-03-03
+6,105,Pedro Rios,Bogota,Mouse,,25.0,2026-03-03
+"""
+
+# Cargar dataset
+df = pd.read_csv(io.StringIO(datos_csv))
+
+# Limpieza de datos
+df = df.drop_duplicates()
+df["ciudad"] = df["ciudad"].fillna("Desconocido")
+df = df.dropna(subset=["cantidad", "precio_unitario"])
+df["fecha"] = pd.to_datetime(df["fecha"])
+df["cantidad"] = df["cantidad"].astype(int)
+df["precio_unitario"] = df["precio_unitario"].astype(float)
+df["total_venta"] = df["cantidad"] * df["precio_unitario"]
+
+# ==========================================
+# 3. CONSULTAS (FILTRO + AGREGACIÓN)
+# ==========================================
+
+# Pregunta 1: ¿Cuál es el total de ventas y transacciones por ciudad?
+consulta_1 = (
+    df.groupby("ciudad")
+    .agg(
+        total_ventas=("total_venta", "sum"),
+        transacciones=("venta_id", "count"),
+    )
+    .reset_index()
+)
+
+# Pregunta 2: ¿Cuáles son las ventas totales de productos con precio unitario mayor a $50?
+filtro_precio = df[df["precio_unitario"] > 50]
+consulta_2 = (
+    filtro_precio.groupby("producto")
+    .agg(
+        total_recaudado=("total_venta", "sum"),
+        unidades_vendidas=("cantidad", "sum"),
+    )
+    .reset_index()
+)
+
+print("--- RESULTADO CONSULTA 1 ---")
+print(consulta_1)
+
+print("\n--- RESULTADO CONSULTA 2 ---")
+print(consulta_2)
+
+"""
+# 4. DOCUMENTACIÓN DEL FLUJO (Extraer -> Limpiar -> Analizar)
+- Extraer: Lectura del conjunto de datos en formato CSV mediante pandas.
+- Limpiar: Eliminación de filas duplicadas, imputación de valores nulos en ciudad, descarte de nulos en métricas, conversión de tipos de datos (datetime, int, float) y cálculo de total_venta.
+- Analizar: Consultas mediante groupby, agregaciones numéricas (sum, count) y filtrado condicional (precio_unitario > 50).
+"""
